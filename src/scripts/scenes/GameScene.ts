@@ -16,13 +16,22 @@ export class GameScene extends Phaser.Scene {
     private _secondBoard: Board = null
     private _view: GameSceneView = null;
 
+    private _background: any;
+
     constructor() {
         super('Game');
         document.querySelector("canvas").oncontextmenu = e => e.preventDefault();
     }
 
     public create(): void {
-      
+        this.sound.stopAll();
+        this.sound.play("battle");
+
+
+        this._background = this.add.image(window.innerWidth/2, window.innerHeight/2, 'gameBack');
+        this._background.displayWidth = window.innerWidth;
+        this._background.displayHeight = window.innerHeight;
+
         this._board = new Board(this, boardSettings.size, boardSettings.size, boardSettings.boats, firstBoardX, secondBoardAtlas);
         this._secondBoard = new Board(this, boardSettings.size, boardSettings.size, boardSettings.boats, secondBoardX, firstBoardAtlas);
 
@@ -54,6 +63,7 @@ export class GameScene extends Phaser.Scene {
                 if (this._board.checkExplode() == boardSettings.boats) {
                     this._onGameOver(false);
                 }
+                this._getAttack();
             } else { 
                  setTimeout(() => atackPlace.closeField(), 100); 
             }
@@ -65,18 +75,19 @@ export class GameScene extends Phaser.Scene {
     private _onFieldClickLeft(field: Field): void {
         if (field.closed) { 
             field.open(); 
-            this._getAttack();
+            this.sound.play("miss");
+           
             if (field.mined) { 
-
+                this.sound.play("bullet");
                 field.exploded = true;
                 if (this._secondBoard.checkExplode() == boardSettings.boats) {
                     this._onGameOver(true);
                 }
             } else if (field.empty) { 
                 field.open();
+            } else if (!field.mined) {
+                this._getAttack();
             }
-
-
         }
     }
 

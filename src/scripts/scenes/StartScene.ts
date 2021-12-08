@@ -4,6 +4,7 @@ const spritesheetPng = require("./../../assets/spritesheet.png");
 const openSpritesheetPng = require("./../../assets/spritesheet2.png");
 const spritesheetJson = require("./../../assets/spritesheet.json");
 const backgroundJpg = require("../../assets/background.jpg")
+const gameBackJpg = require('../../assets/gameback.jpg')
 
 enum Texts {
     Title = 'Warships Battle',
@@ -44,10 +45,13 @@ export class StartScene extends Phaser.Scene {
         this.load.atlas("spritesheet", spritesheetPng, spritesheetJson);
         
         this.load.image('background', backgroundJpg);
-
+        this.load.image('gameBack', gameBackJpg);
+        
+        this.load.audio('battle', '../../src/assets/battle.mp3');
         this.load.audio('main', '../../src/assets/epic.mp3');
         this.load.audio('play', '../../src/assets/play.mp3');
-      
+        this.load.audio('bullet', '../../src/assets/bullet.mp3')
+        this.load.audio('miss', '../../src/assets/miss.mp3')
     }
 
     private startGame(boartSize: number, boatsValue: number):void { 
@@ -66,7 +70,7 @@ export class StartScene extends Phaser.Scene {
     }
 
     public create(): void {
-        
+        this.sound.stopAll();
         this.sound.play('main');
 
         this._background = this.add.image(window.innerWidth/2, window.innerHeight/2, 'background');
