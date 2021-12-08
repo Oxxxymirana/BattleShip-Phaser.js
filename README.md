@@ -17,5 +17,7 @@ BattleShip game on Phaser 3
 ## Thanks for the help
 
 https://phaser.discourse.group/
+
 https://stackoverflow.com/
+
 https://habr.com/ru/post/476682/
