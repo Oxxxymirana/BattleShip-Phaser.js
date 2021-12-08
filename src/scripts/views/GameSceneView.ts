@@ -1,3 +1,5 @@
+import boardSettings from "../sharedData";
+
 enum Styles {
     Color = '#FFF',
     Font = 'Arial'
@@ -10,14 +12,22 @@ enum Texts {
     Failure = 'YOU LOOSE'
 };
 
+enum UsersTExt {
+    PlayerOneTurn = "Players take turns. The first player to move is the player whose board is on the left.",
+    PlayerTern = 'If the player hits the ship, then he continues his turn.',
+}
+
+
 export class GameSceneView {
     private _scene: Phaser.Scene = null;
     private _style: {font: string, fill: string};
     private _txtFlags: Phaser.GameObjects.Text = null;
+ 
     private _txtStatus: Phaser.GameObjects.Text = null;
     private _btnExit: Phaser.GameObjects.Text = null;
-
-
+    
+    public _gameTurn :Phaser.GameObjects.Text = null;
+    public _gameTurnInfo :Phaser.GameObjects.Text = null;
     constructor(scene: Phaser.Scene) {
         this._scene = scene;
         this._style = {font: `28px ${Styles.Font}`, fill: Styles.Color};
@@ -28,6 +38,7 @@ export class GameSceneView {
         this._createTxtFlags();
         this._createTxtStatus();
         this._createBtnExit();
+        this._createhowToPlayInfo();
     }
 
 
@@ -61,6 +72,31 @@ export class GameSceneView {
         .on('pointerout', () => this._txtFlags.setStyle({ fill: '#fff'}))
         this._txtFlags.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
     }
+
+    private _createhowToPlayInfo(): void {
+        this._gameTurn = this._scene.add.text(
+         100,
+            this._scene.cameras.main.centerY * 2 - 100,
+            UsersTExt.PlayerOneTurn,
+            this._style
+        ).setOrigin(0, 1)
+      
+        this._gameTurnInfo = this._scene.add.text(
+            100,
+               this._scene.cameras.main.centerY * 2 - 60,
+               UsersTExt.PlayerTern,
+               this._style
+           ).setOrigin(0, 1)
+
+           this._gameTurn.setInteractive();
+           this._gameTurnInfo.setInteractive();
+    
+        this._gameTurn.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
+        this._gameTurnInfo.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
+    }
+
+
+   
 
  
     private _createTxtStatus(): void {

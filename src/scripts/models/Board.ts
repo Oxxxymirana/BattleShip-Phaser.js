@@ -50,7 +50,7 @@ export class Board extends Phaser.Events.EventEmitter {
         this._fields.forEach(field => field.open());
     }
 
-  
+
 
     public checkExplode(): number {
         let result = 0;

@@ -2,6 +2,7 @@ import  boardSettings  from '../sharedData';
 
 const spritesheetPng = require("./../../assets/spritesheet.png");
 const openSpritesheetPng = require("./../../assets/spritesheet2.png");
+const vsPlayerSpritesheetPng = require("./../../assets/spritesheet3.png");
 const spritesheetJson = require("./../../assets/spritesheet.json");
 const backgroundJpg = require("../../assets/background.jpg")
 const gameBackJpg = require('../../assets/gameback.jpg')
@@ -12,6 +13,7 @@ enum Texts {
     LitleBoard = 'Start game ( Small board : 4x4 / 5 boats)',
     Board = 'Start game ( Standart board : 6x6 / 9 boats)',
     BigBoard = 'Start game ( Big board : 8x8 / 15 boats)',
+    vsUser = 'Play vs your friends! ( Big board : 8x8 / 15 boats)'
 }
 
 enum Styles {
@@ -39,11 +41,12 @@ export class StartScene extends Phaser.Scene {
     private _clickButton: any;
     private _clickMidleButton: any;
     private _clickBigButton: any;
+    private _vsFriendButton: any;
 
     public preload(): void {
         this.load.atlas('spritesheet2', openSpritesheetPng, spritesheetJson);
         this.load.atlas("spritesheet", spritesheetPng, spritesheetJson);
-        
+        this.load.atlas('spritesheet3' , vsPlayerSpritesheetPng,spritesheetJson)
         this.load.image('background', backgroundJpg);
         this.load.image('gameBack', gameBackJpg);
         
@@ -54,8 +57,8 @@ export class StartScene extends Phaser.Scene {
         this.load.audio('miss', '../../src/assets/miss.mp3')
     }
 
-    private startGame(boartSize: number, boatsValue: number):void { 
-
+    private startGame(boartSize: number, boatsValue: number, vsUser: boolean):void { 
+        boardSettings.vs = vsUser;
         boardSettings.size = boartSize;
         boardSettings.boats = boatsValue;
 
@@ -76,6 +79,7 @@ export class StartScene extends Phaser.Scene {
         this._background = this.add.image(window.innerWidth/2, window.innerHeight/2, 'background');
         this._background.displayWidth = window.innerWidth;
         this._background.displayHeight = window.innerHeight;
+       
 
         this._mainText = this.add.text(
             window.innerWidth/8,  
@@ -83,6 +87,7 @@ export class StartScene extends Phaser.Scene {
             Texts.Title, 
             {font: `48px ${Styles.Font}`, fill: Styles.Color})
         .setOrigin(0.5);
+        
     
         this._titleText = this.add.text(
             window.innerWidth/8 + 80,
@@ -91,12 +96,22 @@ export class StartScene extends Phaser.Scene {
             {font: `18px ${Styles.Font}`, fill: Styles.Color})
         .setOrigin(0.5);
 
+
+        this._vsFriendButton =  this.add.text( 
+            50, window.innerHeight/2 + 110,
+            Texts.vsUser,
+            {font : 'bold 32px Arial', Fill: '#999'})
+        .setInteractive()
+        .on('pointerdown', () => {this.startGame(8,15, true);})
+        .on('pointerover', () => {this.buttonOnHover(this._vsFriendButton)})
+        .on('pointerout', () => this._vsFriendButton.setStyle({ fill: '#fff'}))
+
         this._clickButton = this.add.text( 
             50, window.innerHeight/2 + 160,
             Texts.LitleBoard,
             {font : 'bold 32px Arial', Fill: '#999'})
         .setInteractive()
-        .on('pointerdown', () => {this.startGame(4,5);})
+        .on('pointerdown', () => {this.startGame(4,5, false);})
         .on('pointerover', () => {this.buttonOnHover(this._clickButton)})
         .on('pointerout', () => this._clickButton.setStyle({ fill: '#fff'}))
 
@@ -105,7 +120,7 @@ export class StartScene extends Phaser.Scene {
             Texts.Board,
             {font : 'bold 32px Arial', Fill: '#999'})
         .setInteractive()
-        .on('pointerdown', () => {this.startGame(6,9)})
+        .on('pointerdown', () => {this.startGame(6,9, false)})
         .on('pointerover', () => {this.buttonOnHover(this._clickMidleButton)})
         .on('pointerout', () => this._clickMidleButton.setStyle({ fill: '#fff'}))
 
@@ -114,7 +129,7 @@ export class StartScene extends Phaser.Scene {
             Texts.BigBoard,
             {font : 'bold 32px Arial', Fill: '#999'})
         .setInteractive()
-        .on('pointerdown', () => {this.startGame(8,15);})
+        .on('pointerdown', () => {this.startGame(8,15, false);})
         .on('pointerover', () => { this.buttonOnHover(this._clickBigButton)})
         .on('pointerout', () => this._clickBigButton.setStyle({ fill: '#fff'}))
 
@@ -124,5 +139,6 @@ export class StartScene extends Phaser.Scene {
         this._clickButton.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
         this._clickMidleButton.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
         this._clickBigButton.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
+        this._vsFriendButton.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
     }
 }

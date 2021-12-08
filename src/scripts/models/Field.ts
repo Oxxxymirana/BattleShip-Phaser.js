@@ -124,7 +124,6 @@ export class Field extends Phaser.Events.EventEmitter {
      
         this._setState(States.Closed);
         this.emit('change');
-        console.log(this);
     }
 
     
